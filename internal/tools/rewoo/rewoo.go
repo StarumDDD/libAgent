@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/Swarmind/libagent/internal/tools"
+	"github.com/Swarmind/libagent/pkg/util"
 
 	graph "github.com/JackBekket/langgraphgo/graph/stategraph"
 	"github.com/rs/zerolog/log"
@@ -216,14 +217,33 @@ func (r ReWOO) ToolExecution(ctx context.Context, s interface{}) (interface{}, e
 	content := ""
 	if step.Tool != "LLM" {
 		toolDesc := ""
-		for _, tool := range r.ToolsExecutor.Tools {
-			if tool.Definition.Name == step.Tool {
-				options = append(options, llms.WithTools([]llms.Tool{{
-					Type:     "function",
-					Function: &tool.Definition,
-				},
-				}))
-				toolDesc = tool.Definition.Description
+		if toolData, err := r.ToolsExecutor.GetTool(step.Tool); err == nil {
+			options = append(options, llms.WithTools([]llms.Tool{{
+				Type:     "function",
+				Function: &toolData.Definition,
+			},
+			}))
+			toolDesc = toolData.Definition.Description
+
+			if step.Tool == "commandExecutor" {
+				type CommandExecutorArgs struct {
+					Command string `json:"command"`
+				}
+				commandExecutorQuery := CommandExecutorArgs{
+					Command: "pwd && ls",
+				}
+				commandExecutorQueryBytes, _ := json.Marshal(commandExecutorQuery)
+
+				result, err := r.ToolsExecutor.CallTool(ctx,
+					"commandExecutor",
+					string(commandExecutorQueryBytes),
+				)
+				if err != nil {
+					return state, fmt.Errorf("pwd command: %w", err)
+				}
+
+				toolDesc += fmt.Sprintf("Current directory and contents for execution context, "+
+					"correct command according to it if needed: %s\n", result)
 			}
 		}
 
@@ -270,7 +290,7 @@ func (r ReWOO) ToolExecution(ctx context.Context, s interface{}) (interface{}, e
 	if len(state.Results) == 0 {
 		state.Results = map[string]string{}
 	}
-	jsonSafeContent, err := json.Marshal(content)
+	jsonSafeContent, err := json.Marshal(util.RemoveThinkTag(content))
 	if err != nil {
 		return state, err
 	}

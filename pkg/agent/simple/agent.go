@@ -2,7 +2,6 @@ package simple
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/openai"
@@ -26,12 +25,7 @@ func (a *Agent) Run(
 
 	content := response.Choices[0].Content
 
-	jsonSafeContent, err := json.Marshal(content)
-	if err != nil {
-		return llms.TextParts(llms.ChatMessageTypeAI, content), err
-	}
-
-	return llms.TextParts(llms.ChatMessageTypeAI, string(jsonSafeContent)), nil
+	return llms.TextParts(llms.ChatMessageTypeAI, content), nil
 }
 
 func (a *Agent) SimpleRun(
@@ -51,10 +45,5 @@ func (a *Agent) SimpleRun(
 
 	content := response.Choices[0].Content
 
-	jsonSafeContent, err := json.Marshal(content)
-	if err != nil {
-		return content, err
-	}
-
-	return string(jsonSafeContent), nil
+	return content, nil
 }

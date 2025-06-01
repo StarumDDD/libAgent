@@ -7,6 +7,7 @@ import (
 
 	"github.com/Swarmind/libagent/pkg/agent/simple"
 	"github.com/Swarmind/libagent/pkg/config"
+	"github.com/Swarmind/libagent/pkg/util"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -48,5 +49,5 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("agent run")
 	}
-	fmt.Println(result)
+	fmt.Println(util.RemoveThinkTag(result))
 }

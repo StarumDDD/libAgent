@@ -46,10 +46,18 @@ func (e ToolsExecutor) Execute(ctx context.Context, call llms.ToolCall) (llms.To
 	return response, err
 }
 
-func (e ToolsExecutor) CallTool(ctx context.Context, toolName, args string) (string, error) {
+func (e ToolsExecutor) GetTool(toolName string) (*ToolData, error) {
 	toolData, ok := e.Tools[toolName]
 	if !ok {
-		return "", fmt.Errorf("no such tool")
+		return nil, fmt.Errorf("no such tool")
+	}
+	return toolData, nil
+}
+
+func (e ToolsExecutor) CallTool(ctx context.Context, toolName, args string) (string, error) {
+	toolData, err := e.GetTool(toolName)
+	if err != nil {
+		return "", err
 	}
 
 	return toolData.Call(ctx, args)

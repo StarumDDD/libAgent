@@ -2,7 +2,6 @@ package generic
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/Swarmind/libagent/internal/tools"
 
@@ -45,12 +44,7 @@ func (a *Agent) Run(
 		content = toolContent
 	}
 
-	jsonSafeContent, err := json.Marshal(content)
-	if err != nil {
-		return llms.TextParts(llms.ChatMessageTypeAI, content), err
-	}
-
-	return llms.TextParts(llms.ChatMessageTypeAI, string(jsonSafeContent)), nil
+	return llms.TextParts(llms.ChatMessageTypeAI, content), nil
 }
 
 func (a *Agent) SimpleRun(
@@ -85,10 +79,5 @@ func (a *Agent) SimpleRun(
 		content = toolContent
 	}
 
-	jsonSafeContent, err := json.Marshal(content)
-	if err != nil {
-		return content, err
-	}
-
-	return string(jsonSafeContent), nil
+	return content, nil
 }

@@ -18,23 +18,23 @@ import (
 */
 
 const Prompt = `Here is the step by step actions plan:
-- Create a file with 'banana' content
-- Read from it and verify it is indeed contains 'banana'
-- Modify it to 'bannana'
-- Read from it again and verify it is indeed containes 'bannana'
-- Check if 172.86.66.189 host has open 443 and 13370 ports
-- Get weather from wttr.in service with format=3 option
-- Write a hello world python script
-- Execute it and verify it is working
-- Create a directory "testrepo" and move that script inside
-- Initialize a git repository in that directory
-- Configure git locally to use your (LLM) arbitrary name and email for the commit
-- Do a commit
+	- Create a file with 'banana' content
+	- Read from it and verify it is indeed contains 'banana'
+	- Modify it to 'bannana'
+	- Read from it again and verify it is indeed containes 'bannana'
+	- Check if 172.86.66.189 host has open 443 and 13370 ports
+	- Get weather from wttr.in service with format=3 option
+	- Write a hello world python script
+	- Execute it and verify it is working
+	- Create a directory "testrepo" and move that script inside
+	- Initialize a git repository in that directory
+	- Configure git locally to use your (LLM) arbitrary name and email for the commit
+	- Do a commit
 
 You need to execute every step separately and write me a report as a list like this:
- - create file with contents 'banana' [echo 'banana' > file.txt]: OK
- - verify file contains 'banana' [cat file.txt]: banana
- - ...
+	- create file with contents 'banana' [echo 'banana' > file.txt]: OK
+	- verify file contains 'banana' [cat file.txt]: banana
+	- ...
 `
 
 func main() {

@@ -157,21 +157,18 @@ func processField(fieldVal reflect.Value, field reflect.StructField, currentPref
 		}
 	}
 
-	if envValue == "" {
-		return nil
+	if strings.HasSuffix(envTag, "_*") {
+		return processWildcardField(fieldVal, field, envTag)
 	}
 
-	if strings.HasSuffix(envTag, "_*") {
-		return processWildcardField(fieldVal, field, envTag, currentPrefix)
+	if envValue == "" {
+		return nil
 	}
 	return setFieldValue(fieldVal, envValue, field.Name, envTag)
 }
 
-func processWildcardField(fieldVal reflect.Value, field reflect.StructField, envTag, envPrefix string) error {
+func processWildcardField(fieldVal reflect.Value, field reflect.StructField, envTag string) error {
 	keyPrefix := strings.TrimSuffix(envTag, "_*")
-	if envPrefix != "" {
-		keyPrefix = strings.Join([]string{envPrefix, keyPrefix}, "_")
-	}
 
 	envMap := map[string]string{}
 	envArrayString := map[int]string{}
