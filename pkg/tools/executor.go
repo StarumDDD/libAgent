@@ -20,6 +20,7 @@ const CommandNotesPromptAddition = `Here is information about available commands
 var CommandExecutorDefinition = llms.FunctionDefinition{
 	Name: "commandExecutor",
 	Description: `Executes a provided string command in the bash -c wrapper.
+You can use commands like 'tree' or 'ls' to view the file structure and discover file paths.
 Uses temporary home directory.
 Warning!
 Every command will be executed from the temp home directory!
